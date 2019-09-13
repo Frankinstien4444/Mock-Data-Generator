@@ -1,0 +1,536 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{586DB87E-6820-461C-B17D-346CDBDF156C}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>MockDataGenerator</RootNamespace>
+    <AssemblyName>MockDataGenerator</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>
+    </StartupObject>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\Debug\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\Debug\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
+    <Reference Include="ExportEvents, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\Debug\ExportEvents.dll</HintPath>
+    </Reference>
+    <Reference Include="InputBox, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\Debug\InputBox.exe</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AboutBox.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AboutBox.Designer.cs">
+      <DependentUpon>AboutBox.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CollectionDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CollectionDialog.Designer.cs">
+      <DependentUpon>CollectionDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\AbstractRuleControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\AbstractRuleControl.Designer.cs">
+      <DependentUpon>AbstractRuleControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\BaseFieldCtrl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\BaseFieldCtrl.Designer.cs">
+      <DependentUpon>BaseFieldCtrl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\BooleanCtrl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\BooleanCtrl.Designer.cs">
+      <DependentUpon>BooleanCtrl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\CollectionsCtrl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\CollectionsCtrl.Designer.cs">
+      <DependentUpon>CollectionsCtrl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\DateTimeFieldCtrl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\DateTimeFieldCtrl.Designer.cs">
+      <DependentUpon>DateTimeFieldCtrl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\DescriptionCtrl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\DescriptionCtrl.Designer.cs">
+      <DependentUpon>DescriptionCtrl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\EnumeratorCtrl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\EnumeratorCtrl.Designer.cs">
+      <DependentUpon>EnumeratorCtrl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\InternalLists\BaseListCtrl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\InternalLists\BaseListCtrl.Designer.cs">
+      <DependentUpon>BaseListCtrl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\InternalLists\MultiColumnListCrl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\InternalLists\MultiColumnListCrl.Designer.cs">
+      <DependentUpon>MultiColumnListCrl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\InternalLists\SingleColumnListCtrl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\InternalLists\SingleColumnListCtrl.Designer.cs">
+      <DependentUpon>SingleColumnListCtrl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\InternalLists\SupportControls\Range.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\InternalLists\SupportControls\Range.Designer.cs">
+      <DependentUpon>Range.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\InternalLists\SupportControls\RegularExpressionCtrl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\InternalLists\SupportControls\RegularExpressionCtrl.Designer.cs">
+      <DependentUpon>RegularExpressionCtrl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\InternalLists\SupportControls\SelectionCtrl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\InternalLists\SupportControls\SelectionCtrl.Designer.cs">
+      <DependentUpon>SelectionCtrl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\InternalLists\TreeListCtrl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\InternalLists\TreeListCtrl.Designer.cs">
+      <DependentUpon>TreeListCtrl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\MappedSourceCtrl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\MappedSourceCtrl.Designer.cs">
+      <DependentUpon>MappedSourceCtrl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\NumberFieldCtrl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\NumberFieldCtrl.Designer.cs">
+      <DependentUpon>NumberFieldCtrl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\SearchBar.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\SearchBar.Designer.cs">
+      <DependentUpon>SearchBar.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\StandardDataTypesCtrl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\StandardDataTypesCtrl.Designer.cs">
+      <DependentUpon>StandardDataTypesCtrl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\StringFieldCtrl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\StringFieldCtrl.Designer.cs">
+      <DependentUpon>StringFieldCtrl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\TupleCtrl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\TupleCtrl.Designer.cs">
+      <DependentUpon>TupleCtrl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DataFileDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DataFileDialog.Designer.cs">
+      <DependentUpon>DataFileDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Enums\DataResources.cs" />
+    <Compile Include="Enums\FieldTypes.cs" />
+    <Compile Include="Enums\GenericCollections.cs" />
+    <Compile Include="Enums\ListCtrlType.cs" />
+    <Compile Include="Enums\LogicTypes.cs" />
+    <Compile Include="Enums\NavigateFields.cs" />
+    <Compile Include="Enums\ObjectModes.cs" />
+    <Compile Include="Enums\DateTimeRateTypes.cs" />
+    <Compile Include="Enums\StandardTypes.cs" />
+    <Compile Include="FieldSettings.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FieldSettings.Designer.cs">
+      <DependentUpon>FieldSettings.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Interfaces\IDataRule.cs" />
+    <Compile Include="Interfaces\IRuleControl.cs" />
+    <Compile Include="RuleGeneratedData.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="RuleGeneratedData.Designer.cs">
+      <DependentUpon>RuleGeneratedData.cs</DependentUpon>
+    </Compile>
+    <Compile Include="SpecialObjects\AssemblyDescriptor.cs" />
+    <Compile Include="SpecialObjects\CommonCtrlProperies.cs" />
+    <Compile Include="SpecialObjects\Rules\DataSourceRule.cs" />
+    <Compile Include="SpecialObjects\Rules\BaseRule.cs" />
+    <Compile Include="SpecialObjects\Rules\BoolRule.cs" />
+    <Compile Include="SpecialObjects\Rules\CollectionRule.cs" />
+    <Compile Include="SpecialObjects\Rules\EnumeratorRule.cs" />
+    <Compile Include="SpecialObjects\Rules\MappedSourceRule.cs" />
+    <Compile Include="SpecialObjects\Rules\NumberRule.cs" />
+    <Compile Include="SpecialObjects\Rules\RuleSupport\DataField.cs" />
+    <Compile Include="SpecialObjects\Rules\RuleSupport\SearchField.cs" />
+    <Compile Include="SpecialObjects\Rules\SingleFieldDataSourceRule.cs" />
+    <Compile Include="SpecialObjects\Rules\StringRule.cs" />
+    <Compile Include="SpecialObjects\Rules\DateRule.cs" />
+    <Compile Include="SpecialObjects\Rules\GuidRule.cs" />
+    <Compile Include="SpecialObjects\Rules\MultiFieldRule.cs" />
+    <Compile Include="SpecialObjects\MapReferences.cs" />
+    <Compile Include="SpecialObjects\ReadReferenceFiles.cs" />
+    <Compile Include="SpecialObjects\ReferenceData.cs" />
+    <Compile Include="SpecialObjects\Rules\TimeRulecs.cs" />
+    <Compile Include="SpecialObjects\Rules\TRule.cs" />
+    <Compile Include="SpecialObjects\Rules\TupleRule.cs" />
+    <Compile Include="SpecialObjects\Rules\TypeRule.cs" />
+    <Compile Include="TupleDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="TupleDialog.Designer.cs">
+      <DependentUpon>TupleDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UIMapper.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UIMapper.Designer.cs">
+      <DependentUpon>UIMapper.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MainForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MainForm.Designer.cs">
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SpecialObjects\Parameters.cs" />
+    <Compile Include="UIServices\DatabaseUtilities.cs" />
+    <Compile Include="UIServices\ListObjectDetails.cs" />
+    <Compile Include="UIServices\Assembly.cs" />
+    <Compile Include="UIServices\Mapped.cs" />
+    <Compile Include="UIServices\MapTo.cs" />
+    <Compile Include="UIServices\TreeNodeUtilities.cs" />
+    <Compile Include="Utility\BuildRule.cs" />
+    <Compile Include="Utility\CacheInternalData.cs" />
+    <Compile Include="Utility\CloneDataRule.cs" />
+    <Compile Include="Utility\EnumPlus.cs" />
+    <Compile Include="Utility\ExtractFromComboBox.cs" />
+    <Compile Include="Utility\PageOffsetList.cs" />
+    <Compile Include="Utility\Register.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Utility\Register.Designer.cs">
+      <DependentUpon>Register.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Utility\MapManager.cs" />
+    <Compile Include="Utility\NameSpaceManager.cs" />
+    <Compile Include="Utility\OutputTemplate.cs" />
+    <Compile Include="Utility\RuleDataGenerator.cs" />
+    <Compile Include="Utility\RuleSourceMapDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Utility\RuleSourceMapDialog.Designer.cs">
+      <DependentUpon>RuleSourceMapDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Utility\Store.cs" />
+    <EmbeddedResource Include="AboutBox.resx">
+      <DependentUpon>AboutBox.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CollectionDialog.resx">
+      <DependentUpon>CollectionDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\BaseFieldCtrl.resx">
+      <DependentUpon>BaseFieldCtrl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\BooleanCtrl.resx">
+      <DependentUpon>BooleanCtrl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\CollectionsCtrl.resx">
+      <DependentUpon>CollectionsCtrl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\DateTimeFieldCtrl.resx">
+      <DependentUpon>DateTimeFieldCtrl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\DescriptionCtrl.resx">
+      <DependentUpon>DescriptionCtrl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\EnumeratorCtrl.resx">
+      <DependentUpon>EnumeratorCtrl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\InternalLists\MultiColumnListCrl.resx">
+      <DependentUpon>MultiColumnListCrl.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\InternalLists\SingleColumnListCtrl.resx">
+      <DependentUpon>SingleColumnListCtrl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\InternalLists\SupportControls\Range.resx">
+      <DependentUpon>Range.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\InternalLists\SupportControls\RegularExpressionCtrl.resx">
+      <DependentUpon>RegularExpressionCtrl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\InternalLists\SupportControls\SelectionCtrl.resx">
+      <DependentUpon>SelectionCtrl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\InternalLists\TreeListCtrl.resx">
+      <DependentUpon>TreeListCtrl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\MappedSourceCtrl.resx">
+      <DependentUpon>MappedSourceCtrl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\NumberFieldCtrl.resx">
+      <DependentUpon>NumberFieldCtrl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\SearchBar.resx">
+      <DependentUpon>SearchBar.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\StandardDataTypesCtrl.resx">
+      <DependentUpon>StandardDataTypesCtrl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\StringFieldCtrl.resx">
+      <DependentUpon>StringFieldCtrl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\TupleCtrl.resx">
+      <DependentUpon>TupleCtrl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DataFileDialog.resx">
+      <DependentUpon>DataFileDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FieldSettings.resx">
+      <DependentUpon>FieldSettings.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="RuleGeneratedData.resx">
+      <DependentUpon>RuleGeneratedData.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TupleDialog.resx">
+      <DependentUpon>TupleDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UIMapper.resx">
+      <DependentUpon>UIMapper.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MainForm.resx">
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <EmbeddedResource Include="Utility\Register.resx">
+      <DependentUpon>Register.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Utility\RuleSourceMapDialog.resx">
+      <DependentUpon>RuleSourceMapDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\Atlas Delevelopment\AtlasTools\UniversalDataBase\UniversalDataBase\UniversalDataBase.csproj">
+      <Project>{ae12bf04-8fe7-470e-990c-2b27c706b48f}</Project>
+      <Name>UniversalDataBase</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\TextBox_wLineNumbers\YetAnotherRichTextBox\YetAnotherRichTextBox.csproj">
+      <Project>{F97221A9-B193-4DE7-A76A-F64CB1523871}</Project>
+      <Name>YetAnotherRichTextBox</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Thyme\Thyme\Thyme\Thyme.csproj">
+      <Project>{ec71da80-b65e-404b-93ce-a83a7209d09b}</Project>
+      <Name>Thyme</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\BuildObjects\BuildObjects.csproj">
+      <Project>{bb9437b5-a5e8-4812-bf30-94c4187ba355}</Project>
+      <Name>BuildObjects</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\Monster.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\Icon.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\mini_open_folder_full.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\miniNetwork.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\NetIcon-web-design-edinburgh-hosting.png-300x263.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\Universal_Database_Reduced.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\help.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\miniPreview.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\Universal_Database_Reduced.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\alt-parameters-icone-9469-64.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\atom--elementary-particle-pic.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\mini_save_as.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\miniSave.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\Associate2.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\automator-icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\update.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\network.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\save_as2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\Save2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\Universal_DatabaseMedium.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\NewProject.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\QA.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\binoculars.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\viewer.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Images\Open.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\colorfuldragon3pm2.gif" />
+    <None Include="Images\Banner.png" />
+    <None Include="Images\Back-arrow-icon.jpg" />
+    <None Include="Images\ForeWard.jpg" />
+    <Content Include="Resources\CompanyNames.txt" />
+    <Content Include="Resources\EuropeanCompanies.txt" />
+    <Content Include="Resources\FemaleNames.txt" />
+    <Content Include="Resources\IndustrySectors.txt" />
+    <Content Include="Resources\LastNames.txt" />
+    <Content Include="Resources\ListOfCountires.txt" />
+    <Content Include="Resources\ListOfStreets.txt" />
+    <Content Include="Resources\ListOfUS_States.txt" />
+    <Content Include="Resources\MaleNames.txt" />
+    <Content Include="Resources\Occupations.txt" />
+    <Content Include="Resources\USCities.txt" />
+    <Content Include="Resources\us_postal_codes.txt" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

@@ -1,0 +1,500 @@
+Novartis
+Nestle
+Roche
+Anheuser-Busch InBev
+Royal Dutch Shell
+HSBC
+Sanofi
+Volkswagen
+Bayer
+Unilever
+Total
+BP
+Novo Nordisk
+GlaxoSmithKline
+Banco Santander
+Daimler
+L'Oreal
+Inditex
+British American Tobacco
+Basf
+Siemens
+LVMH
+SAP
+AstraZeneca
+Vodafone Group
+SabMiller
+Deutsche Telekom
+Lloyds Banking Group
+BMW
+Allianz
+BNP Paribas
+UBS
+Telefonica
+Diageo
+BBVA
+Prudential
+Eni
+Reckitt Benckiser
+Axa
+Barclays
+Hennes & Mauritz
+Rio Tinto
+Intesa Sanpaolo
+Gazprom
+ING
+Statoil
+Glencore
+BT Group
+Airbus
+Zurich Financial Services
+Nordea Bank
+ABB
+Henkel
+GDF Suez
+National Grid
+Deutsche Bank
+Continental
+Shire
+BHP Billiton
+Rosneft
+Schneider Electric
+A P Moller - Maersk
+EDF
+ASML Holding
+Air Liquide
+Heineken
+Credit Suisse Group
+Danone
+Orange
+Enel
+Imperial Tobacco
+Richemont
+BG Group
+Ericsson
+Iberdrola
+Standard Chartered
+Unicredit
+Lukoil
+Societe Generale
+Atlas Copco
+Deutsche Post
+Credit Agricole
+Linde
+Munich Re
+Hermes International
+Reed Elsevier
+Swiss RE
+Christian Dior
+Vinci
+Vivendi
+Associated British Foods
+Royal Bank of Scotland
+Syngenta
+Pernod-Ricard
+Generali
+Luxottica
+Investor
+Telenor
+Fresenius
+Swisscom
+E On
+WPP
+Tesco
+Safran
+Compass Group
+Mmc Norilsk Nickel
+Sampo
+Svenska Handelsbanken
+Nokia
+TeliaSonera
+Surgutneftegas
+CaixaBank
+Swedbank
+Renault
+Altice
+Danske Bank
+Numericable SFR
+Philips Electronics
+Unibail-Rodamco
+DNB
+Rolls-Royce
+KBC Group
+Fresenius Medical Care
+Volvo
+Repsol
+SEB
+Sky
+Essilor International
+Saint Gobain
+Kering
+Legal & General
+Bae Systems
+Carrefour
+Holcim
+Sberbank of Russia
+Aviva
+Swatch Group
+Natixis
+Arm Holdings
+Novatek
+Gas Natural
+SSE
+Beiersdorf
+Atlantia
+Telecom Italia
+Crh
+Anglo American
+Assa Abloy
+Fiat Chrysler Automobiles
+Endesa
+Kone
+Heineken Holding
+Amadeus IT
+Centrica
+Fortum
+Lafarge
+Schindler
+Michelin
+Magnit
+Akzo Nobel
+International Airlines Group
+Kuehne+Nagel International
+Pearson
+Ahold
+Dassault Systemes
+Telefonica Deutschland
+Publicis Groupe
+Snam
+Aegon
+Givaudan
+Evonik Industries
+Adidas
+Tenaris
+Ryanair Holdings
+Experian
+SCA
+Abertis Infraestructuras
+Old Mutual
+Bankia
+Next
+Deutsche Boerse
+Arcelormittal
+Commerzbank
+Ferrovial
+RWE
+Man
+Wolseley
+Bollore
+Sodexo
+Coloplast
+Smith & Nephew
+ITV
+Klepierre
+SGS
+Porsche AML
+Adecco
+Thyssenkrupp
+Heidelbergcement
+RTL Group
+Land Securities Group
+Merck Kgaa
+KPN
+Legrand
+SES
+Geberit
+Whitbread
+UCB
+Yara International
+Sandvik
+Standard Life
+Turkiye Garanti Bankasi
+Lindt & Spruengli
+Iliad
+Grifols
+Infineon Technologies
+Cap Gemini
+VTB Bank
+GBL
+Actelion
+Kingfisher
+Bouygues
+Peugeot
+CEZ
+Marks & Spencer
+Carlsberg
+Bank Polska Kasa Opieki
+London Stock Ex.Group
+British Land
+Banco de Sabadell
+Hannover Ruck.
+Bank of Ireland
+Solvay
+Hexagon
+Novozymes
+Accor
+CNP Assurances
+Deutsche Annington
+Valeo
+ADP
+Belgacom
+Kerry Group
+Akbank
+SKF
+Pandora
+Hal Trust
+Koc Holding
+EDP Energias De Portugal
+Thales
+Burberry Group
+Kabel Deutschland
+Turkcell
+Mapfre
+Julius Bar
+PKO Bank
+Exor
+ACS
+PZU Group
+Easyjet
+CNH Industrial
+Red Electrica
+Capita
+Metro
+Randstad Holding
+Norsk Hydro
+Tatneft
+Prosiebensat 1 Media
+Schroders
+Antofagasta
+Alcatel-Lucent
+Veolia Environnement
+Erste Group Bank
+UPM-Kymmene
+Banco Popular Espanol
+Johnson Matthey
+Polska Grupa Energetyczna
+Turkiye Is Bankasi
+DSM
+Casino Guichard-Perrachon
+NN Group
+Wolters Kluwer
+Megafon
+Alstom
+Ems-Chemie
+Zodiac Aerospace
+Bureau Veritas International
+Severstal
+United Utilities
+Tui
+Sonova
+United Internet
+Enel Green Power
+Turk Telekomunikasyon
+Suez Environnement
+Gea Group
+Kinnevik
+Vestas Windsystems
+Delhaize Group
+Intercontinental Hotels
+Brenntag
+Alrosa
+Bunzl
+Aberdeen Asset Management
+Carnival
+Omv
+Skanska
+Terna Rete Elettrica Naz
+Mobile Telesystems
+GKN
+Wartsila
+Friends Life Group
+Gjensidige Forsikring
+Electrolux
+Boss (Hugo)
+Polish Oil and Gas
+Bank Zachodni Wbk
+Gecina
+STMicroelectronics
+Industrivarden
+Galp Energia Sgps
+Mediobanca
+Ageas
+Alfa Laval
+Symrise
+Komercni Banka
+Rocket Internet
+Stora Enso
+Hargreaves Lansdown
+Pirelli
+Ashtead Group
+Unipolsai
+Novolipetsk Steel
+Partners Group
+Swiss Life
+Talanx
+Jeronimo Martins
+Uralkali
+Groupe Eurotunnel
+Barratt Developments
+Hammerson
+Orkla
+Sika
+Persimmon
+JCDecaux
+Deutsche Wohnen
+Eutelsat Communications
+Taylor Wimpey
+Fresnillo
+Sage Group
+Sainsbury (J)
+Babcock International
+Severn Trent
+St.James's Place
+Haci Omer Sabanci
+Enka Insaat Ve Sanayi
+Travis Perkins
+Direct Line Insurance
+Mondi
+Gemalto
+Vopak
+Unione di Banche Italian
+Dixons Carphone
+Tryg
+Atos
+3I Group
+Technip
+Finmeccanica
+Bankinter
+Enagas
+Bic
+Colruyt
+G4S
+Melker Schorling
+Bashneft
+Intu Properties
+Neste Oil
+Morrison (Wm) Supermarkets
+Yapi Ve Kredi Bankasi
+PKN Orlen
+Icade
+Merlin Entertainments
+Clariant
+Baloise
+Ingenico
+Lonza
+Fonciere des Regions
+Smurfitt Kappa
+Ulusoy un Sanayi ve Ticaret
+Coca-Cola HBC
+Smiths Group
+Oci
+Royal Mail
+Deutsche Lufthansa
+Scor
+Meggitt
+Randgold Resources
+Telenet Group Holding
+RSA Insurance Group
+Admiral Group
+KGHM
+Voestalpine
+Hikma Pharmaceuticals
+K & S
+Schibsted
+Andritz
+Turkiye Halk Bankasi
+Inmarsat
+Zalando
+Rexam
+Wacker Chemie
+Chr Hansen
+Boskalis Westminster
+Qiagen
+EDP Renaveis
+Celesio
+Intertek
+Mediolanum
+Tupras
+Swedish Match
+Provident Financial
+Imerys
+ISS
+Axel Springer
+TDC
+Aggreko
+Meda
+Arkema
+Edenred
+Wendel
+Galenica
+Vienna Insurance
+Banca Popolare
+Aryzta
+Derwent London
+Fielmann
+Zardoya Otis
+Bpost
+Banco Commercial Portugues
+Fraport
+Croda International
+Rexel
+Getinge
+DSV
+Glanbia
+Eiffage
+Eregli Demir Celik
+Informa
+Boliden
+Pargesa
+Faurecia
+Sports Direct International
+Mediaset
+Salvatore Ferragamo
+Bim Birlesik Magazalar
+Weir Group
+Barry Callebaut
+Hella Kgaa Hueck
+Helvetia
+Dufry
+Transocean
+OTP
+DKSH Holding
+Berkeley
+Fuchs Petrolub
+Swiss Prime Site
+Man Group
+Hochtief
+Inchcape
+Amec Foster Wheeler
+Osram Licht
+Marine Harvest
+Wirecard
+IMI
+Cobham
+Investec
+Tele2
+Mediaset Espana Comunicacion
+Distribuidora Internacional de Alimentation
+ICAP
+MTU Aero Engines
+DCC
+Omv Petrom
+Capital & Counties Properties
+Securitas
+Anadolu Efes Bircacilik
+Banque Cantonale Vaudoise
+Mbank
+Parmalat
+Lanxness
+Petrofac
+Pennon
+TalkTalk Telecom
+Flughafen Zurich
+William Hill
+Smith (DS)
+Euler Hermes
+William Demant
+Trelleborg
+Henderson
+Eurazeo
+ING Bank Slaski

@@ -1,10 +1,11 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using BuildObjects.Enums;
 using BuildObjects.MapObjects;
 using MockDataGenerator.Enums;
 using MockDataGenerator.Interfaces;
@@ -43,7 +44,7 @@ namespace MockDataGenerator.UIServices
                 newRef = new MapReferences();
                 
                 newRef.ViableInfo = new ViableMapAndData();
-                newRef.ViableInfo.TheMap = aMap;
+                newRef.ViableInfo.TheMap = aMap;                
                 TreeNode aNode = projectView.Nodes[0].Nodes[3].Nodes.Add(NameSpaceManager.RemoveNameSpace(aMap.ClassName));
                         
                 aNode.Tag = newRef;
@@ -55,7 +56,7 @@ namespace MockDataGenerator.UIServices
             return newRef;    
         }
 
-        public static bool LoadDataTableToMapNode(TreeView projectView, String className, ReturnData data, ObjectModes mode)
+        public static bool LoadDataTableToMapNode(TreeView projectView, String className, ReturnData data, DataMapType mode)
         {
             MapReferences newRef = null;
 
@@ -63,10 +64,16 @@ namespace MockDataGenerator.UIServices
             {
                return false;
             }
-
-            if(MapManager.FindStoreAndUpdate(newRef.ViableInfo.StoredData, mode, newRef.LastMap, data.QueryResult))            
+            Guid anId = Guid.Empty;
+            string methodName = mode.ToString();
+            if (mode == DataMapType.MethodParameterMap)
+            {
+                methodName = newRef.LastMethodMap.MethodName;
+                anId = newRef.LastMethodMap.ID;
+            }
+            if (MapManager.FindStoreAndUpdate(newRef.ViableInfo.StoredData, mode, methodName, data.QueryResult, anId))            
             {               
-                MapManager.FindSQLAndUpdate(newRef.LastMap, data.QueryResult.Columns.Count, newRef.ReferenceInfo, data.SQLText);
+                MapManager.FindSQLAndUpdate(methodName, anId, data.QueryResult.Columns.Count, newRef.ReferenceInfo, data.SQLText);
             }
 
             return true;

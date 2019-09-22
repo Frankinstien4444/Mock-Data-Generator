@@ -1,12 +1,14 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using BuildObjects.Enums;
 using BuildObjects.MapObjects;
 using MockDataGenerator.Enums;
 using MockDataGenerator.Interfaces;
@@ -19,12 +21,12 @@ namespace MockDataGenerator
     public partial class UIMapper : Form
     {
         bool _autoMap = false;
-        private string _methodName;
+        public MethodParameterMap MethodMap { private set; get; }
         private string _className;
         private MapedObject _aMap;
         public static List<IDataRule> RuleSets { set; get; }
-        public static MapedObject Result { set; get; }
-        private ObjectModes currentMode = ObjectModes.None;        
+        public static MapedObject Result { set; get; }         
+        private DataMapType currentMode = DataMapType.None;        
         bool allowSwitching = false;
         bool blockSwitching = false;
 
@@ -49,57 +51,66 @@ namespace MockDataGenerator
             Result = null;
         }
 
-        public UIMapper(MapedObject review, string methodName, int paramCount, ObjectModes mode)
+        public UIMapper(MapedObject review, MethodParameterMap methodMap, DataMapType mode)
             :this()
         {
-            UIMappEdit(review, methodName, paramCount, mode);
+            UIMappEdit(review, methodMap, mode);
         }
-        public UIMapper(MapedObject review, List<IDataRule> _rules, string methodName, int paramCount, ObjectModes mode)
+        /// <summary>
+        /// This allows for an existing map to be edited
+        /// </summary>
+        /// <param name="review"></param>
+        /// <param name="_rules"></param>
+        /// <param name="methodName"></param>
+        /// <param name="paramCount"></param>
+        /// <param name="mode"></param>
+        public UIMapper(MapedObject review, List<IDataRule> _rules, MethodParameterMap methodMap, DataMapType mode)
             : this()
         {
             
             if (_rules.Count > 0)
             {
                 _aMap = review;
-                _methodName = methodName;
-                lblMethodName.Text = methodName;
+                MethodMap = methodMap;
+                lblMethodName.Text = methodMap.MethodName;
                 lblClassName.Text = review.ClassName;
-                var aMethod = review.MethodParameters.Where(x => x.MethodName.Equals(methodName) && x.ParameterCount.Equals(paramCount)).FirstOrDefault();
-                LoadParameterMaps(aMethod.ParameterMaps, _rules);
+                //var aMethod = review.MethodParameters.Where(x => x.MethodName.Equals(methodName) && x.ID == id).FirstOrDefault();
+                LoadParameterMaps(methodMap.ParameterMaps, _rules);
                 SetDisplayMode(mode);
             }           
         }
 
-        private void UIMappEdit(MapedObject review, string methodName, int paramCount, ObjectModes mode)
+        private void UIMappEdit(MapedObject review, MethodParameterMap methodMap, DataMapType mode)
         {
             InitializeComponent();
             _aMap = review;
-            _methodName = methodName;
-            lblMethodName.Text = methodName;
+            MethodMap = methodMap;
+            if(methodMap != null)
+                lblMethodName.Text = methodMap.MethodName;
             lblClassName.Text = review.ClassName;
 
             switch (mode)
             {
-                case ObjectModes.Properties:
+                case DataMapType.PropertyColumnMap:
 
                     LoadColumnsFromMap(review.PropMaps);
                     break;
 
-                case ObjectModes.Fields:
+                case DataMapType.FieldColumnMap:
                     LoadColumnsFromMap(review.FieldMaps);
                     break;
 
-                case ObjectModes.Parameters:
+                case DataMapType.MethodParameterMap:
 
-                    var method = review.MethodParameters.Where(x => x.MethodName.Equals(methodName) && x.ParameterCount.Equals(paramCount)).FirstOrDefault();
-                    if (method != null)
+                    //var method = review.MethodParameters.Where(x => x.MethodName.Equals(methodName) && x.ID == id).FirstOrDefault();
+                    if (methodMap != null)
                     {
-                        if (method.ParameterMaps.Any())
+                        if (methodMap.ParameterMaps.Any())
                         {
                             //LoadParameterMaps(method.ParameterMaps)
                         }
-                        else if (method.ColumnParameterMaps.Any())
-                            LoadColumnsFromMap(method.ColumnParameterMaps);
+                        else if (methodMap.ColumnParameterMaps.Any())
+                            LoadColumnsFromMap(methodMap.ColumnParameterMaps);
                     }
                     break;
             }
@@ -108,7 +119,7 @@ namespace MockDataGenerator
             SetDisplayMode(mode);
         }
 
-        public UIMapper(MapedObject aMap, ListView.SelectedListViewItemCollection objectView, DataGridViewSelectedRowCollection  dataRows, ObjectModes displayMode)
+        public UIMapper(MapedObject aMap, ListView.SelectedListViewItemCollection objectView, DataGridViewSelectedRowCollection  dataRows, DataMapType displayMode)
             : this()
         {
             InitializeComponent();
@@ -120,7 +131,7 @@ namespace MockDataGenerator
             SetDisplayMode(displayMode);
         }
         
-        public UIMapper(MapedObject aMap, string methodName, List<Parameters> objectView, DataGridViewSelectedRowCollection dataRows, ObjectModes displayMode)
+        public UIMapper(MapedObject aMap, string methodName, List<Parameters> objectView, DataGridViewSelectedRowCollection dataRows, DataMapType displayMode)
             : this()
         {
             InitializeComponent();
@@ -128,8 +139,7 @@ namespace MockDataGenerator
             lblClassName.Text = aMap.ClassName;
             LoadFromDataGrid(dataRows);            
             LoadTargetParameters(objectView);
-            _aMap = aMap;
-            _methodName = methodName;
+            _aMap = aMap;            
            Result = null;           
            SetDisplayMode(displayMode);
         }
@@ -139,26 +149,26 @@ namespace MockDataGenerator
             var datasource = lstDataSource.Items.Cast<ListViewItem>();
             foreach (ListViewItem aItem in lstObjectTarget.Items)
             {
-                var found = datasource.Where(x=>x.SubItems[1].Text.Equals(aItem.SubItems[1].Text)).FirstOrDefault();
+                var found = datasource.Where(x=>x.SubItems[1].Text.ToLower().Equals(aItem.SubItems[1].Text.ToLower())).FirstOrDefault();
                 if(found != null)
-                    lstMappedPairs.Items.Add(new ListViewItem(new string[] {found.SubItems[1].Text, aItem.SubItems[1].Text, found.SubItems[0].Text, found.SubItems[2].Text }));
+                    lstMappedPairs.Items.Add(new ListViewItem(new string[] {found.SubItems[1].Text, aItem.SubItems[1].Text, found.SubItems[0].Text, found.SubItems[2].Text, aItem.SubItems[0].Text.Contains("Nullable").ToString() }));
             }
         }
 
-        private void SetDisplayMode(ObjectModes displayMode)
+        private void SetDisplayMode(DataMapType displayMode)
         {
             switch(displayMode)
             {
-                case ObjectModes.Fields:
+                case DataMapType.FieldColumnMap:
                     rbModeFields.Checked = true;
                     break;
 
                 //case ObjectModes.RuleBased:
-                case ObjectModes.Parameters:
+                case DataMapType.MethodParameterMap:
                     rbModeParameters.Checked = true;
                     break;
 
-                case ObjectModes.Properties:
+                case DataMapType.PropertyColumnMap:
                     rbModeProp.Checked = true;
                     break;
             }
@@ -179,6 +189,7 @@ namespace MockDataGenerator
         {
             foreach (ListViewItem anItem in ObjectView)
             {
+                var details = (PropertyInfo)anItem.Tag;               
                 ListViewItem newItem = new ListViewItem(new string[] { anItem.SubItems[1].Text, anItem.SubItems[0].Text });
                 lstObjectTarget.Items.Add(newItem);
             }
@@ -309,18 +320,20 @@ namespace MockDataGenerator
             ListViewItem newPair = null;
             bool duplicate = false;
             string fieldName = String.Empty;
+            string fieldNullable = String.Empty;
             if (parent.Equals(dragedItem.ListView) || hitItem.Item == null) return;
             switch(whoDidIt)
             {
                 case DragedFrom.DataSource:
                     fieldName = hitItem.Item.SubItems[1].Text;
+                    fieldNullable = hitItem.Item.SubItems[0].Text.Contains("Nullable").ToString();
                     duplicate = DuplicateEntry(fieldName);                    
                     if (!duplicate)
                     {
                         //if (dragedItem.Tag.GetType().BaseType.Equals(typeof(BaseRule)))
                         if(ValidateIfRuleType(dragedItem.Tag))
                         {
-                            newPair = new ListViewItem(new string[] { dragedItem.SubItems[1].Text, fieldName, hitItem.Item.SubItems[0].Text, "false", dragedItem.SubItems[2].Text });
+                            newPair = new ListViewItem(new string[] { dragedItem.SubItems[1].Text, fieldName, hitItem.Item.SubItems[0].Text, "false", dragedItem.SubItems[2].Text, fieldNullable });
                             newPair.Tag = ((BaseRule)dragedItem.Tag).Clone();
                             ((BaseRule)newPair.Tag).FieldName = fieldName;
                             ((BaseRule)newPair.Tag).FieldDataType = hitItem.Item.SubItems[0].Text;
@@ -330,19 +343,20 @@ namespace MockDataGenerator
                             }
                         }
                         else
-                            newPair = new ListViewItem(new string[] { dragedItem.SubItems[1].Text, fieldName, dragedItem.SubItems[0].Text, dragedItem.SubItems[2].Text });
+                            newPair = new ListViewItem(new string[] { dragedItem.SubItems[1].Text, fieldName, dragedItem.SubItems[0].Text, dragedItem.SubItems[2].Text, fieldNullable });
                     }
                     break;
 
                 case DragedFrom.ObjectTarget:
                     fieldName = dragedItem.SubItems[1].Text;
+                    fieldNullable = dragedItem.SubItems[0].Text.Contains("Nullable").ToString();
                     duplicate = DuplicateEntry(fieldName);
                     if (!duplicate)
                     {
                         //if (hitItem.Item.Tag.GetType().BaseType.Equals(typeof(BaseRule)))
                         if (ValidateIfRuleType(hitItem.Item.Tag))
                         {
-                            newPair = new ListViewItem(new string[] { hitItem.Item.SubItems[1].Text, fieldName, dragedItem.SubItems[0].Text, "false", hitItem.Item.SubItems[2].Text });
+                            newPair = new ListViewItem(new string[] { hitItem.Item.SubItems[1].Text, fieldName, dragedItem.SubItems[0].Text, "false", hitItem.Item.SubItems[2].Text, fieldNullable });
                             newPair.Tag = ((BaseRule)hitItem.Item.Tag).Clone();
                             ((BaseRule)newPair.Tag).FieldName = fieldName;
                             ((BaseRule)newPair.Tag).FieldDataType = dragedItem.SubItems[0].Text;
@@ -352,7 +366,7 @@ namespace MockDataGenerator
                             }
                         }
                         else
-                            newPair = new ListViewItem(new string[] { hitItem.Item.SubItems[1].Text, fieldName, hitItem.Item.SubItems[0].Text, hitItem.Item.SubItems[2].Text });
+                            newPair = new ListViewItem(new string[] { hitItem.Item.SubItems[1].Text, fieldName, hitItem.Item.SubItems[0].Text, hitItem.Item.SubItems[2].Text, fieldNullable });
                     }                  
                     break;
             }            
@@ -376,7 +390,7 @@ namespace MockDataGenerator
 
         private bool ValidateIfRuleType(Object tag)
         {
-            return tag.GetType().BaseType.Name.Contains("Rule");
+            return tag != null ? tag.GetType().BaseType.Name.Contains("Rule") : false;
         }
 
         private bool DuplicateEntry(String fieldName)
@@ -578,19 +592,26 @@ namespace MockDataGenerator
             {
                 switch(currentMode)
                 {
-                    case ObjectModes.Fields:
+                    case DataMapType.FieldColumnMap:
                         MapTo.MapToFields(aItem, _aMap, aItem.Tag != null);
                         break;
 
-                    case ObjectModes.Properties:
+                    case DataMapType.PropertyColumnMap:
                         MapTo.MapToProperties(aItem, _aMap, aItem.Tag != null);
                         break;
 
-                    case ObjectModes.Parameters:
-                        if(aItem.Tag.GetType().BaseType.Equals(typeof(BaseRule)))
-                            MapTo.MapToParameters(aItem, _aMap, _methodName, paramCount, true);
+                    case DataMapType.MethodParameterMap:
+                        string methodName = lblMethodName.Text;
+                        Guid anId = Guid.Empty;
+                        if(MethodMap != null)
+                        {
+                            anId = MethodMap.ID;
+                            methodName = MethodMap.MethodName;
+                        }
+                        if(aItem.Tag != null && aItem.Tag.GetType().BaseType.Equals(typeof(BaseRule)))
+                            MethodMap = MapTo.MapToParameters(aItem, _aMap, methodName, paramCount, anId, true);
                         else
-                            MapTo.MapToParameterColumnMap(aItem, _aMap, _methodName, paramCount, false);
+                            MethodMap = MapTo.MapToParameterColumnMap(aItem, _aMap, methodName, paramCount, false, anId);
                         break;           
                 }
 

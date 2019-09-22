@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -20,7 +20,7 @@ namespace MockDataGenerator.UIServices
             aPair.RuleBased = ruleBased;
             aPair.PropertyName = aItem.SubItems[1].Text;
             aPair.DataType = aItem.SubItems[2].Text;
-            aPair.IsNullable = bool.Parse(aItem.SubItems[3].Text);
+            aPair.IsNullable = bool.Parse(aItem.SubItems[4].Text);
             aMap.PropMaps.Add(aPair);
         }
 
@@ -34,21 +34,21 @@ namespace MockDataGenerator.UIServices
             aPair.RuleBased = ruleBased;
             aPair.FieldName = aItem.SubItems[1].Text;
             aPair.DataType = aItem.SubItems[2].Text;
-            aPair.IsNullable = bool.Parse(aItem.SubItems[3].Text);
+            aPair.IsNullable = bool.Parse(aItem.SubItems[4].Text);
             aMap.FieldMaps.Add(aPair);
         }
 
-        public static void MapToParameters(ListViewItem aItem, MapedObject aMap, String methodName, int parameterCount, bool ruleBased)
+        public static MethodParameterMap MapToParameters(ListViewItem aItem, MapedObject aMap, String methodName, int parameterCount, Guid id, bool ruleBased)
         {
             ParameterMap aRuleField = new ParameterMap();
             aRuleField.DataType = aItem.SubItems[2].Text;
-            aRuleField.IsNullable = bool.Parse(aItem.SubItems[3].Text);
+            aRuleField.IsNullable = bool.Parse(aItem.SubItems[4].Text);
             aRuleField.ParameterName = aItem.SubItems[1].Text;
             aRuleField.RuleBased = ruleBased;
-            AddParameterMap(aMap, aRuleField, methodName, parameterCount);
+            return AddParameterMap(aMap, aRuleField, methodName, id, parameterCount);
         }
 
-        public static void MapToParameterColumnMap(ListViewItem aItem, MapedObject aMap, String methodName, int parameterCount, bool ruleBased)
+        public static MethodParameterMap MapToParameterColumnMap(ListViewItem aItem, MapedObject aMap, String methodName, int parameterCount, bool ruleBased, Guid id)
         {
             ParameterColumnMap aPair = new ParameterColumnMap();
             if(!ruleBased)
@@ -58,13 +58,13 @@ namespace MockDataGenerator.UIServices
             aPair.RuleBased = ruleBased;
             aPair.ParameterName = aItem.SubItems[1].Text;
             aPair.DataType = aItem.SubItems[2].Text;
-            aPair.IsNullable = bool.Parse(aItem.SubItems[3].Text);
-            AddParameterMap(aMap, aPair, methodName, parameterCount);
+            aPair.IsNullable = bool.Parse(aItem.SubItems[4].Text);
+            return AddParameterMap(aMap, aPair, methodName, id, parameterCount);
         }
 
-        private static void AddParameterMap(MapedObject aMap, InfoMap aPair, String methodName, int paramCount)
+        private static MethodParameterMap AddParameterMap(MapedObject aMap, InfoMap aPair, String methodName, Guid id, int paramCount)
         {
-            var methodParams = aMap.MethodParameters.Where(x => x.MethodName.Equals(methodName) && x.ParameterCount.Equals(paramCount)).FirstOrDefault();
+            var methodParams = aMap.MethodParameters.Where(x => x.MethodName.Equals(methodName) && x.ID == id).FirstOrDefault();
             if (methodParams == null)
             {
                 methodParams = new MethodParameterMap();
@@ -80,6 +80,8 @@ namespace MockDataGenerator.UIServices
                 methodParams.ParameterMaps.Add((ParameterMap)aPair);
             else if (!aPair.RuleBased)
                 methodParams.ColumnParameterMaps.Add((ParameterColumnMap)aPair);
+
+            return methodParams;
         }
     }
 }

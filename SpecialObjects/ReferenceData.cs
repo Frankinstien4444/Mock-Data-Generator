@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
@@ -41,6 +41,8 @@ namespace MockDataGenerator.SpecialObjects
     public abstract class BaseStore
     {
         [DataMember]
+        public Guid MapID { private set; get; }
+        [DataMember]
         public String DataStoreName { set; get; }
         [DataMember]
         public DataMapType MapType { set; get; }
@@ -48,5 +50,9 @@ namespace MockDataGenerator.SpecialObjects
         [DataMember]
         public int ParamterCount { set; get; }
 
+        public BaseStore()
+        {
+            MapID = Guid.NewGuid();
+        }
     }
 }

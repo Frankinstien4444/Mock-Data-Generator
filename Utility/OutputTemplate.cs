@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
@@ -18,6 +18,17 @@ namespace MockDataGenerator.Utility
             foreach (DataStore aStore in data.StoredData)
             {
                 results.AddRange(CreateTemplateNoParams(aStore.ActualData, data.TheMap, aStore.DataStoreName, String.Empty));
+            }
+
+            return results;
+        }
+
+        public static List<String> CreateTemplateParams(ViableMapAndData data)
+        {
+            List<String> results = new List<string>();
+            foreach (DataStore aStore in data.StoredData)
+            {
+                results.AddRange(CreateTemplateParams(aStore.ActualData, data.TheMap, aStore.DataStoreName, String.Empty));
             }
 
             return results;
@@ -51,6 +62,7 @@ namespace MockDataGenerator.Utility
                     switch (storeType)
                     {
                         case DataMapType.FieldColumnMap:
+                            BuildFieldTemplate(customName, aRow, map.FieldMaps, result);
                             break;
                         case DataMapType.PropertyColumnMap:
                             BuildPropertyTemplate(customName, aRow, map.PropMaps, result);
@@ -67,7 +79,7 @@ namespace MockDataGenerator.Utility
         {
             foreach (ColumnMap aMap in propertyMaps)
             {
-                result.Add(BuildTemplate(customName, aRow, aMap));
+                result.Add(BuildNoParamTemplate.BuildTemplate(customName, aRow, aMap));
             }
         }
 
@@ -75,106 +87,72 @@ namespace MockDataGenerator.Utility
         {
             foreach (ColumnMap aMap in fieldMaps)
             {
-                result.Add(BuildTemplate(customName, aRow, aMap));
+                result.Add(BuildNoParamTemplate.BuildTemplate(customName, aRow, aMap));
             }
         }
-        private static String BuildTemplate(string customName, DataRow aRow, ColumnMap aMap)
-        {
-                string test = String.Empty;
-                            
-               if (aMap.IsNullable)
-               {
-                   if (aMap.DataType.Equals("System.DateTime?") || aMap.DataType.Equals("System.String?"))
-                   {
-                       test = string.Format(@"{0}.{1} = {2};", customName, NameSpaceManager.RemoveNameSpace(GetMapFieldPropName(aMap)), SetNullableDateValue(aRow, aMap));
-                   }
-                   else
-                      test = string.Format("{0}.{1} = {2};", customName, NameSpaceManager.RemoveNameSpace(GetMapFieldPropName(aMap)), SetNullableValue(aRow, aMap));
-               }
-               else if (aMap.DataType.Equals("System.String"))
-                    test = string.Format(@"{0}.{1} = ""{2}"";", customName, NameSpaceManager.RemoveNameSpace(GetMapFieldPropName(aMap)), aRow.Field<object>(aMap.ColumnName));
-               else if (aMap.DataType.Equals("System.DateTime"))
-                    test = string.Format(@"{0}.{1} = DateTime.Parse(""{2}"");", customName, NameSpaceManager.RemoveNameSpace(GetMapFieldPropName(aMap)), aRow.Field<object>(aMap.ColumnName));
-               else if (aMap.DataType.Equals("System.Guid"))
-               {
-                    test = string.Format(@"{0}.{1} = Guid.ParseExact(""{2}"");", customName, NameSpaceManager.RemoveNameSpace(GetMapFieldPropName(aMap)), aRow.Field<object>(aMap.ColumnName));
-               }
-               else if (aMap.DataType.Equals("System.Boolean"))
-               {
-                   test = string.Format("{0}.{1} = {2};", customName, NameSpaceManager.RemoveNameSpace(GetMapFieldPropName(aMap)), aRow.Field<object>(aMap.ColumnName).ToString().ToLower());
-               }
-               else
-                  test = string.Format("{0}.{1} = {2};", customName, NameSpaceManager.RemoveNameSpace(GetMapFieldPropName(aMap)), aRow.Field<object>(aMap.ColumnName));
 
-            return test;            
+        private static void BuildParamTemplate(MethodParameterMap aMap, DataRow aRow, List<String> results, string customName, string className, bool declareClass = false)
+        {
+            string period = ".";
+            string aSpace = " ";
+            if (!declareClass)
+                aSpace = String.Empty;
+
+            StringBuilder result = new StringBuilder();
+            int count = 0;
+                string method = "{0}{1}{2}{3}{4}({5});";
+                foreach (ParameterColumnMap cMap in aMap.ColumnParameterMaps)
+                {
+                    result.Append(BuildParameterTemplate.BuildTemplate(aRow, cMap));                    
+                }
+                string parameters = result.ToString();
+                int indx = parameters.LastIndexOf(",");
+                parameters = parameters.Remove(indx);
+            if (aMap.MethodName == ".ctor")
+            {
+                string preFix = String.Empty;
+                if (declareClass)
+                    preFix = className;
+                results.Add(string.Format(method, preFix, aSpace, customName, " = new ", className, parameters));
+                count++;
+            }
+            else
+            {
+                results.Add(string.Format(method, customName, period, aMap.MethodName, "", "", parameters));
+            }
             
         }
 
-        private static String SetNullableValue(DataRow aRow, ColumnMap aMap)
+        public static List<String> CreateTemplateParams(DataTable dg, MapedObject map, String storeName, String customName)
         {
-            object dataValue = null;
-            if (aRow.Field<object>(aMap.ColumnName) != null)
+            List<String> results = new List<string>();
+            if (String.IsNullOrEmpty(customName))
+                customName = String.Format("_{0}", NameSpaceManager.RemoveNameSpace(map.ClassName).ToLower());
+            
+            string insert = InputBox.frmInput.InputBox("Adding a Object to a Collection? Enter code:", null, customName, false);
+            var aMap = map.MethodParameters.Where(x => x.MethodName == storeName).FirstOrDefault();
+            int count = -1;
+            bool delcareClass = true;
+            foreach (DataRow aRow in dg.Rows)
             {
-                switch (aMap.DataType)
+                count++;
+
+                if (count > 0)
                 {
-                    case "System.Boolean":
-                        dataValue = aRow.Field<object>(aMap.ColumnName).ToString().ToLower();
-                        break;
-
-                    case "System.Decimal":
-                        dataValue = String.Format("(Decimal){0}", aRow.Field<object>(aMap.ColumnName));
-                        break;
-
-                    case "System.String":
-                        dataValue = String.Format(@"""{0}""", aRow.Field<object>(aMap.ColumnName));
-                        break;
-
-                    default:
-                        dataValue = aRow.Field<object>(aMap.ColumnName);
-                        break;
+                    if (!String.IsNullOrEmpty(insert))
+                        results.Add(insert);
+                    results.Add(" ");
+                    results.Add("//NewObject");
+                    delcareClass = false;
                 }
-            }           
-
-            string newValue = "new {0}?({1})";
-            if (dataValue != null)
-                newValue = string.Format(newValue, aMap.DataType, dataValue);
-            else
-                newValue = "null";
-                        
-            return newValue;
-        }
-        
-        private static String SetNullableDateValue(DataRow aRow, ColumnMap aMap)
-        {
-            object dataValue = aRow.Field<object>(aMap.ColumnName);
-            string newValue = @"new {0}?(""{1}"")";
-            if (dataValue != null)
-                newValue = string.Format(newValue, aMap.DataType, dataValue);
-            else
-                newValue = "null";
-
-            return newValue;
-        }
-        /// <summary>
-        /// gets field or property name
-        /// </summary>
-        /// <param name="aMap"></param>
-        /// <returns></returns>
-        private static String GetMapFieldPropName(ColumnMap aMap)
-        {
-            string result = String.Empty;
-            switch(aMap.GetType().Name)
-            {
-                case "PropertyColumnMap":
-                    result = ((PropertyColumnMap)aMap).PropertyName;
-                    break;
-
-                case "FieldColumnMap":
-                    result = ((FieldColumnMap)aMap).FieldName;
-                    break;
+               
+                BuildParamTemplate(aMap, aRow, results, customName, map.ClassName, delcareClass);      
+                     
             }
-
-            return result;
+            if (!String.IsNullOrEmpty(insert))
+                results.Add(insert);
+            return results;
         }
+
     }
 }

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -27,7 +27,7 @@ namespace MockDataGenerator
     {
         AssemblyDescriptor SampleAssembly;
         DataBaseObjectClass aDataObject;
-        ObjectModes currentMode = ObjectModes.Parameters;
+        DataMapType currentMode = DataMapType.MethodParameterMap;
         static MainForm Me;
         Thyme.UI viewSql;
 
@@ -71,9 +71,13 @@ namespace MockDataGenerator
 
         private void mnuFindAssembly_Click(object sender, EventArgs e)
         {
-            UIServices.AssemblyUtilities.AddAssembly(projectView, dlgOpenAssembly, ctxAssemblyNode);
-            SampleAssembly = (AssemblyDescriptor)projectView.SelectedNode.Tag;
-            UIServices.AssemblyUtilities.LoadAssemblyToList(SampleAssembly.Assembly, lstVwAssemblies);            
+            try
+            {
+                UIServices.AssemblyUtilities.AddAssembly(projectView, dlgOpenAssembly, ctxAssemblyNode);
+                SampleAssembly = (AssemblyDescriptor)projectView.SelectedNode.Tag;
+                UIServices.AssemblyUtilities.LoadAssemblyToList(SampleAssembly.Assembly, lstVwAssemblies);
+            }
+            catch { }
         }
 
         private void lstVwAssemblies_Click(object sender, EventArgs e)
@@ -83,22 +87,22 @@ namespace MockDataGenerator
             Type selectedType = SampleAssembly.Assembly.GetType(lstVwAssemblies.SelectedItems[0].SubItems[2].Text);
             if (rbFields.Checked)
             {
-                currentMode = ObjectModes.Fields;
+                currentMode = DataMapType.FieldColumnMap;
                 ListObjectDetails.LoadFields(selectedType, lstVwObjectView);
             }
             else if(rbProperties.Checked)
             {
-                currentMode = ObjectModes.Properties;
+                currentMode = DataMapType.PropertyColumnMap;
                 ListObjectDetails.LoadProperties(selectedType, lstVwObjectView);
             }
             else if(rbMethods.Checked)
             {
-                currentMode = ObjectModes.Parameters;
+                currentMode = DataMapType.MethodParameterMap;
                 ListObjectDetails.LoadMethods(selectedType, lstVwObjectView);
             }
             else if(rbConstructors.Checked)
             {
-                currentMode = ObjectModes.Parameters;
+                currentMode = DataMapType.MethodParameterMap;
                 ListObjectDetails.LoadConstuctors(selectedType, lstVwObjectView);
             }
         }       
@@ -152,8 +156,13 @@ namespace MockDataGenerator
                 foreach (MethodParameterMap aMap in select.ViableInfo.TheMap.MethodParameters)
                 {
                     string method = Parameters.FormParameterMethod(aMap);
-                    ctxMapForMethods.DropDownItems.Add(method).Click += mnuMapWindow_Click;
-                    ctxDataForMethods.DropDownItems.Add(method).Click += mnuMapWindow_Click;
+                    var aMenuItem = ctxMapForMethods.DropDownItems.Add(method);
+                    aMenuItem.Click += mnuMapWindow_Click;
+                    aMenuItem.Tag = aMap;
+
+                    aMenuItem = ctxDataForMethods.DropDownItems.Add(method);
+                    aMenuItem.Click += mnuQueryWindow_Click;
+                    aMenuItem.Tag = aMap;
                 }
             }
         }
@@ -199,23 +208,24 @@ namespace MockDataGenerator
             UIMapper manualMapping = null;
             
             MapedObject aMapObject = null;
-
+            MapManager.FindOrCreateMap(projectView, lstVwAssemblies.SelectedItems[0].SubItems[2].Text, ref aMapObject);
             if ((rbFields.Checked || rbProperties.Checked) && lstVwObjectView.SelectedItems.Count > 0)
             {
-                MapManager.FindOrCreateMap(projectView, lstVwAssemblies.SelectedItems[0].SubItems[2].Text, ref aMapObject);
+                //MapManager.FindOrCreateMap(projectView, lstVwAssemblies.SelectedItems[0].SubItems[2].Text, ref aMapObject);
 
                 manualMapping = new UIMapper(aMapObject, lstVwObjectView.SelectedItems, dgTableView.SelectedRows, currentMode);
             }
             else if (lstVwObjectView.SelectedItems.Count > 0)
             {
-                MapManager.FindOrCreateMap(projectView, lstVwAssemblies.SelectedItems[0].SubItems[2].Text, ref aMapObject);
-                string theparams = String.Empty;
-                if (rbConstructors.Checked)
-                    theparams = lstVwObjectView.SelectedItems[0].SubItems[1].Text;
-                else
-                    theparams = lstVwObjectView.SelectedItems[0].SubItems[2].Text;
-                string[] parameters = theparams.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
-                manualMapping = new UIMapper(aMapObject, lstVwObjectView.SelectedItems[0].SubItems[0].Text, Parameters.ParseString(parameters), dgTableView.SelectedRows, currentMode);
+                //MapManager.FindOrCreateMap(projectView, lstVwAssemblies.SelectedItems[0].SubItems[2].Text, ref aMapObject);
+                //string theparams = String.Empty;
+                //if (rbConstructors.Checked)
+                //    theparams = lstVwObjectView.SelectedItems[0].SubItems[1].Text;
+                //else
+                //    theparams = lstVwObjectView.SelectedItems[0].SubItems[2].Text;
+                //string[] parameters = theparams.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+                //manualMapping = new UIMapper(aMapObject, lstVwObjectView.SelectedItems[0].SubItems[0].Text, Parameters.ParseString(parameters), dgTableView.SelectedRows, currentMode);
+                manualMapping = CreateParamsMapper(aMapObject);
             }
 
             ApplyField(manualMapping);
@@ -224,16 +234,34 @@ namespace MockDataGenerator
 
         }
 
+        private UIMapper CreateParamsMapper(MapedObject aMapObject)
+        {
+            string theparams = String.Empty;
+            if (rbConstructors.Checked)
+                theparams = lstVwObjectView.SelectedItems[0].SubItems[1].Text;
+            else
+                theparams = lstVwObjectView.SelectedItems[0].SubItems[2].Text;
+            string[] parameters = theparams.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+            return new UIMapper(aMapObject, lstVwObjectView.SelectedItems[0].SubItems[0].Text, Parameters.ParseString(parameters), dgTableView.SelectedRows, currentMode);
+        }
+
         private void ApplyField(UIMapper aMapper)
         {
             if (aMapper != null && aMapper.ShowDialog() == DialogResult.OK)
             {
                 MapReferences mapRef =  Mapped.LoadMapToTree(projectView, UIMapper.Result, ctxTreeMenu);
-                
+                mapRef.LastMap = currentMode;
+                mapRef.LastMethodMap = aMapper.MethodMap;
                 if (UIMapper.RuleSets.Count > 0)
                 {
-                    mapRef.LastMap = lstVwObjectView.SelectedItems[0].SubItems[0].Text;
-                    MapManager.FindRuleAndUpdate(mapRef.LastMap, mapRef.ReferenceInfo, UIMapper.RuleSets, ModeToMapConverter.TransFormModeToMapType(currentMode));
+                    string storeName = currentMode.ToString();
+                    Guid anId = Guid.Empty;
+                    if (currentMode == DataMapType.MethodParameterMap)
+                    {
+                        anId = aMapper.MethodMap.ID;
+                        storeName = mapRef.LastMethodMap.MethodName;
+                    }
+                    MapManager.FindRuleAndUpdate(storeName, mapRef.ReferenceInfo, UIMapper.RuleSets, currentMode, anId);
                 }
             }
         }
@@ -274,11 +302,17 @@ namespace MockDataGenerator
 
         private void mnuAutoMap_Click(object sender, EventArgs e)
         {
-            if (currentMode != ObjectModes.None && lstVwObjectView.SelectedItems.Count > 0 && dgTableView.SelectedRows.Count > 0)
-            {                
+            if (currentMode != DataMapType.None && lstVwObjectView.SelectedItems.Count > 0 && dgTableView.SelectedRows.Count > 0)
+            {
+                UIMapper autoMapIt = null;
                 MapedObject aMapObject = null;
-                MapManager.FindOrCreateMap(projectView, lstVwAssemblies.SelectedItems[0].SubItems[2].Text, ref aMapObject);                
-                UIMapper autoMapIt = new UIMapper(aMapObject, lstVwObjectView.SelectedItems, dgTableView.SelectedRows, currentMode);
+                MapManager.FindOrCreateMap(projectView, lstVwAssemblies.SelectedItems[0].SubItems[2].Text, ref aMapObject);
+                if ((rbFields.Checked || rbProperties.Checked))
+                    autoMapIt = new UIMapper(aMapObject, lstVwObjectView.SelectedItems, dgTableView.SelectedRows, currentMode);
+                else
+                {
+                    autoMapIt = CreateParamsMapper(aMapObject);
+                }
                 autoMapIt.AutoMap = true;
                 ApplyField(autoMapIt);
                 if (dgTableView.Tag != null)
@@ -321,8 +355,9 @@ namespace MockDataGenerator
                     MapReferences aRef = (MapReferences)projectView.SelectedNode.Tag;
                     ToolStripMenuItem sentIt = (ToolStripMenuItem)sender;
                     Tuple<String, int> parsed = ParseTextLabel(sentIt.Text);
-                    aRef.LastMap = ConvertMenuToMapType(parsed.Item1); 
-                    SetCurrentMode(parsed.Item1);
+                    aRef.LastMap = ConvertMenuToMapType(parsed.Item1);
+                    currentMode = aRef.LastMap;
+                    //aRef.MethodName = parsed.Item1;
                     if (viewSql == null)
                     {
                         viewSql = new Thyme.UI(aDataObject);
@@ -337,16 +372,29 @@ namespace MockDataGenerator
 
                     ReturnData editing = new ReturnData();
                     string storeName = String.Empty;
-                    editing.QueryResult = MapManager.FindQueryInfo(aRef.ViableInfo.StoredData, null, currentMode, parsed.Item2, out storeName);
+                    Guid mapGuid = Guid.Empty;
+                    if (aRef.LastMap == DataMapType.MethodParameterMap)
+                    {
+                        aRef.LastMethodMap = (MethodParameterMap)sentIt.Tag;
+                        mapGuid = aRef.LastMethodMap.ID;
+                        editing.QueryResult = MapManager.FindQueryInfo(aRef.ViableInfo.StoredData, aRef.LastMethodMap.MethodName, currentMode, mapGuid, out storeName);            
+                    }
+                    else
+                    {
+                        editing.QueryResult = MapManager.FindQueryInfo(aRef.ViableInfo.StoredData, null, currentMode, Guid.Empty, out storeName);
+                    }
+
+
+                    //editing.QueryResult = MapManager.FindQueryInfo(aRef.ViableInfo.StoredData, null, currentMode, parsed.Item2, out storeName);
                     switch(currentMode)
                     {
-                        case ObjectModes.Fields:
-                        case ObjectModes.Properties:
-                            editing.SQLText = MapManager.GetSQL(storeName, aRef.ReferenceInfo);
+                        case DataMapType.FieldColumnMap:
+                        case DataMapType.PropertyColumnMap:
+                            editing.SQLText = MapManager.GetSQL(storeName, Guid.Empty, aRef.ReferenceInfo);
                             break;
 
-                        case ObjectModes.Parameters:
-                            editing.SQLText = MapManager.GetSQL(storeName, aRef.ReferenceInfo, parsed.Item2);
+                        case DataMapType.MethodParameterMap:
+                            editing.SQLText = MapManager.GetSQL(storeName, mapGuid, aRef.ReferenceInfo);
                             break;
                     }
                     
@@ -364,46 +412,69 @@ namespace MockDataGenerator
 
         private void mnuMapWindow_Click(object sender, EventArgs e)
         {
-            if (projectView.SelectedNode.Parent.Text.Trim().Equals("Mapped Objects"))
-            {                
-                ToolStripMenuItem sentIt = (ToolStripMenuItem)sender;
-                MapReferences aRef = (MapReferences)projectView.SelectedNode.Tag;
-                Tuple<String, int> parsed = ParseTextLabel(sentIt.Text);
-                aRef.LastMap = ConvertMenuToMapType(parsed.Item1);
-                SetCurrentMode(aRef.LastMap);
-                UIMapper autoMapIt = null;
-
-                var store = MapManager.FindStore(aRef.LastMap, parsed.Item2, aRef.ReferenceInfo);               
-                if(store != null && store.GetType().Equals(typeof(RuleStore)))
+            try
+            {
+                if (projectView.SelectedNode.Parent.Text.Trim().Equals("Mapped Objects"))
                 {
-                    autoMapIt = new UIMapper(aRef.ViableInfo.TheMap, ((RuleStore)store).Rules, aRef.LastMap, parsed.Item2, currentMode);
-                }
-                else
-                    autoMapIt = new UIMapper(aRef.ViableInfo.TheMap, aRef.LastMap, parsed.Item2, currentMode);
+                    ToolStripMenuItem sentIt = (ToolStripMenuItem)sender;
+                    MapReferences aRef = (MapReferences)projectView.SelectedNode.Tag;
+                    Tuple<String, int> parsed = ParseTextLabel(sentIt.Text);
+                    BaseStore store = null;
+                    Guid mapGuid = Guid.Empty;
+                    aRef.LastMap = ConvertMenuToMapType(parsed.Item1);
+                    currentMode = aRef.LastMap;
+                    if (aRef.LastMap == DataMapType.MethodParameterMap)
+                    {
+                        aRef.LastMethodMap = (MethodParameterMap)sentIt.Tag;
+                        mapGuid = aRef.LastMethodMap.ID;
+                        store = MapManager.FindStore(aRef.LastMethodMap.MethodName, mapGuid, aRef.ReferenceInfo);
+                    }
+                    else
+                    {
+                        store = MapManager.FindStore(aRef.LastMap.ToString(), mapGuid, aRef.ReferenceInfo);
+                    }
+                    UIMapper autoMapIt = null;
 
-                autoMapIt.AutoMap = true;
-                if (autoMapIt.ShowDialog() == DialogResult.OK)
-                {
-                    aRef.ViableInfo.TheMap = UIMapper.Result;
-                    if (store.GetType().Equals(typeof(RuleStore)))
-                        ((RuleStore)store).Rules = UIMapper.RuleSets;
+                    
+                    if (store != null && store.GetType().Equals(typeof(RuleStore)))
+                    {
+                        autoMapIt = new UIMapper(aRef.ViableInfo.TheMap, ((RuleStore)store).Rules, aRef.LastMethodMap, currentMode);
+                    }
+                    else
+                        autoMapIt = new UIMapper(aRef.ViableInfo.TheMap, aRef.LastMethodMap, currentMode);
+
+                    autoMapIt.AutoMap = true;
+                    if (autoMapIt.ShowDialog() == DialogResult.OK)
+                    {
+                        aRef.ViableInfo.TheMap = UIMapper.Result;
+                        if (store.GetType().Equals(typeof(RuleStore)))
+                            ((RuleStore)store).Rules = UIMapper.RuleSets;
+                    }
                 }
             }
+            catch(Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
-
-        private String ConvertMenuToMapType(string text)
+        
+        private DataMapType ConvertMenuToMapType(string text)
         {
-            string result = text;
+            DataMapType result = DataMapType.None;
             switch(text)
             {
                 case "Map for Properties":
                 case "Data for Properties":
-                    result = "PropertyColumnMap";
+                    result = DataMapType.PropertyColumnMap;
                     break;
 
                 case "Data For Fields":
                 case "Map For Fields":
-                    result = "FieldColumnMap";
+                    result = DataMapType.FieldColumnMap;
+                    break;
+
+                default:
+                    result = DataMapType.MethodParameterMap;
                     break;
             }
 
@@ -427,17 +498,17 @@ namespace MockDataGenerator
             {
                 case "Data for Properties":
                 case "Map for Properties":
-                    currentMode = ObjectModes.Properties;
+                    currentMode = DataMapType.PropertyColumnMap;
                     break;
 
                 case "Data For Fields":
                 case "Map For Fields":
-                    currentMode = ObjectModes.Fields;
+                    currentMode = DataMapType.FieldColumnMap;
                     break;
 
                 case "Data for Methods":
                 case "Map for Methods":
-                    currentMode = ObjectModes.Parameters;
+                    currentMode = DataMapType.MethodParameterMap;
                     break;
             }
         }
@@ -449,7 +520,14 @@ namespace MockDataGenerator
             if (saveFile.ShowDialog() == DialogResult.OK)
             {
                 MapReferences aRef = (MapReferences)projectView.SelectedNode.Tag;
-                Store.SaveTextOutput(OutputTemplate.CreateTemplateNoParams(aRef.ViableInfo), saveFile.FileName);
+                if (aRef.ViableInfo.TheMap.MethodParameters.Count == 0)
+                {
+                    Store.SaveTextOutput(OutputTemplate.CreateTemplateNoParams(aRef.ViableInfo), saveFile.FileName);
+                }
+                else
+                {
+                    Store.SaveTextOutput(OutputTemplate.CreateTemplateParams(aRef.ViableInfo), saveFile.FileName);
+                }
             }
         }
 
@@ -505,11 +583,11 @@ namespace MockDataGenerator
 
         private void ObjectSelections_Load(object sender, EventArgs e)
         {
-            if(!File.Exists(String.Format(@"{0}\RadMonster\License.lic", Application.StartupPath)))
-            {
-                frmRegister warning = new Utility.frmRegister();
-                warning.ShowDialog();
-            }
+            //if(!File.Exists(String.Format(@"{0}\RadMonster\License.lic", Application.StartupPath)))
+            //{
+            //    frmRegister warning = new Utility.frmRegister();
+            //    warning.ShowDialog();
+            //}
         }
 
         private void ObjectSelections_Shown(object sender, EventArgs e)

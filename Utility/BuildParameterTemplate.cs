@@ -23,9 +23,20 @@ namespace MockDataGenerator.Utility
                     output = string.Format("{0},", ExtractStoreData.SetNullableValue(aRow, aMap));
             }
             else if (aMap.DataType.Contains("String"))
-                output = string.Format(@"""{0}"",", aRow.Field<string>(aMap.ColumnName).Trim());
+            {
+                string checkField = aRow.Field<string>(aMap.ColumnName);
+                if(String.IsNullOrEmtpy(checkField))
+                    checkField = String.Empty;
+                else
+                    checkField = checkField.Trim();
+                output = string.Format(@"""{0}"",", checkField);
+            }
             else if (aMap.DataType.Contains("DateTime"))
-                output = string.Format(@"DateTime.Parse(""{0}""),", aRow.Field<object>(aMap.ColumnName));
+            {
+                var checkDate = aRow.Field<object>(aMap.ColumnName);
+                if(checkDate != DBNull.Value)
+                    output = string.Format(@"DateTime.Parse(""{0}""),", checkDate);                
+            }
             else if (aMap.DataType.Contains("Guid"))
             {
                 output = string.Format(@"Guid.ParseExact(""{0}""),", aRow.Field<object>(aMap.ColumnName));

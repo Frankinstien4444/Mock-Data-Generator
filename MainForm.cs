@@ -270,7 +270,7 @@ namespace MockDataGenerator
         {
             if (aDataObject != null)
             {
-                if (viewSql == null)
+                if (viewSql == null || viewSql.IsDisposed)
                 {
                     viewSql = new Thyme.UI(aDataObject);
                     this.AddOwnedForm(viewSql);
@@ -358,7 +358,7 @@ namespace MockDataGenerator
                     aRef.LastMap = ConvertMenuToMapType(parsed.Item1);
                     currentMode = aRef.LastMap;
                     //aRef.MethodName = parsed.Item1;
-                    if (viewSql == null)
+                    if (viewSql == null || viewSql.IsDisposed)
                     {
                         viewSql = new Thyme.UI(aDataObject);
                         this.AddOwnedForm(viewSql);
@@ -384,20 +384,9 @@ namespace MockDataGenerator
                         editing.QueryResult = MapManager.FindQueryInfo(aRef.ViableInfo.StoredData, null, currentMode, Guid.Empty, out storeName);
                     }
 
-
-                    //editing.QueryResult = MapManager.FindQueryInfo(aRef.ViableInfo.StoredData, null, currentMode, parsed.Item2, out storeName);
-                    switch(currentMode)
-                    {
-                        case DataMapType.FieldColumnMap:
-                        case DataMapType.PropertyColumnMap:
-                            editing.SQLText = MapManager.GetSQL(storeName, Guid.Empty, aRef.ReferenceInfo);
-                            break;
-
-                        case DataMapType.MethodParameterMap:
-                            editing.SQLText = MapManager.GetSQL(storeName, mapGuid, aRef.ReferenceInfo);
-                            break;
-                    }
+                    editing.SQLText = MapManager.GetSQL(storeName, mapGuid, aRef.ReferenceInfo);
                     
+
                     viewSql.SetEditData(editing);
                     
                 }
@@ -443,7 +432,7 @@ namespace MockDataGenerator
                     else
                         autoMapIt = new UIMapper(aRef.ViableInfo.TheMap, aRef.LastMethodMap, currentMode);
 
-                    autoMapIt.AutoMap = true;
+                    //autoMapIt.AutoMap = true;
                     if (autoMapIt.ShowDialog() == DialogResult.OK)
                     {
                         aRef.ViableInfo.TheMap = UIMapper.Result;

@@ -150,9 +150,13 @@ namespace MockDataGenerator
             foreach (ListViewItem aItem in lstObjectTarget.Items)
             {
                 var found = datasource.Where(x=>x.SubItems[1].Text.ToLower().Equals(aItem.SubItems[1].Text.ToLower())).FirstOrDefault();
-                if(found != null)
-                    lstMappedPairs.Items.Add(new ListViewItem(new string[] {found.SubItems[1].Text, aItem.SubItems[1].Text, found.SubItems[0].Text, found.SubItems[2].Text, aItem.SubItems[0].Text.Contains("Nullable").ToString() }));
+                if (found != null)
+                    lstMappedPairs.Items.Add(new ListViewItem(new string[] { found.SubItems[1].Text, aItem.SubItems[1].Text, found.SubItems[0].Text, found.SubItems[2].Text, aItem.SubItems[0].Text.Contains("Nullable").ToString() }));
+                else
+                    aItem.BackColor = Color.Red;
             }
+
+            lblTotalMapped.Text = lstMappedPairs.Items.Count.ToString();
         }
 
         private void SetDisplayMode(DataMapType displayMode)
@@ -183,6 +187,8 @@ namespace MockDataGenerator
                 ListViewItem newItem = new ListViewItem(new string[] { aSet.DataTypeName, aSet.ParameterName });
                 lstObjectTarget.Items.Add(newItem);
             }
+
+            lblTargetTotal.Text = ObjectView.Count.ToString();
         }
 
         private void LoadTargetFieldsOrProperties(ListView.SelectedListViewItemCollection ObjectView)
@@ -193,6 +199,8 @@ namespace MockDataGenerator
                 ListViewItem newItem = new ListViewItem(new string[] { anItem.SubItems[1].Text, anItem.SubItems[0].Text });
                 lstObjectTarget.Items.Add(newItem);
             }
+
+            lblTargetTotal.Text = ObjectView.Count.ToString();
         }
 
         private void LoadColumnsFromMap(List<PropertyColumnMap> loadBoth)
@@ -201,7 +209,10 @@ namespace MockDataGenerator
             {
                 AddToDataSourceList(aMap);
                 AddToTargetObjectList(aMap.PropertyName, aMap.DataType);
+                AddToMapList(aMap);
             }
+
+            Totals(loadBoth.Count);
         }
 
         private void LoadColumnsFromMap(List<FieldColumnMap> loadBoth)
@@ -210,7 +221,10 @@ namespace MockDataGenerator
             {
                 AddToDataSourceList(aMap);
                 AddToTargetObjectList(aMap.FieldName, aMap.DataType);
+                AddToMapList(aMap);
             }
+
+            Totals(loadBoth.Count);
         }
 
         private void LoadParameterMaps(List<ParameterMap> parameters, List<IDataRule> _rules)
@@ -220,7 +234,10 @@ namespace MockDataGenerator
                 IDataRule aRule = _rules.Where(x => x.FieldName.Equals(aMap.ParameterName)).FirstOrDefault();
                 AddToTargetObjectList(aMap.ParameterName, aMap.DataType);
                 AddToDataSourceList(aMap);
+                AddToMapList(aMap);
             }
+
+            Totals(parameters.Count);
         }
 
         private void LoadColumnsFromMap(List<ParameterColumnMap> loadBoth)
@@ -229,7 +246,40 @@ namespace MockDataGenerator
             {
                 AddToDataSourceList(aMap);
                 AddToTargetObjectList(aMap.ParameterName, aMap.DataType);
+                AddToMapList(aMap);
             }
+
+            Totals(loadBoth.Count);
+        }
+
+        private void Totals(int count)
+        {
+            lblTargetTotal.Text = count.ToString();
+            lblTotalMapped.Text =count.ToString();
+        }
+
+        private void AddToMapList(FieldColumnMap aMap)
+        {
+            var newPair = new ListViewItem(new string[] { aMap.ColumnName, aMap.FieldName, aMap.DataType, aMap.IsNullable.ToString(), aMap.IsNullable.ToString() });
+            lstMappedPairs.Items.Add(newPair);
+        }
+
+        private void AddToMapList(PropertyColumnMap aMap)
+        {
+            var newPair = new ListViewItem(new string[] { aMap.ColumnName, aMap.PropertyName, aMap.DataType, aMap.IsNullable.ToString(), aMap.IsNullable.ToString() });
+            lstMappedPairs.Items.Add(newPair);
+        }
+
+        private void AddToMapList(ParameterColumnMap aMap)
+        {
+            var newPair = new ListViewItem(new string[] { aMap.ColumnName, aMap.ParameterName, aMap.DataType, aMap.IsNullable.ToString(), aMap.IsNullable.ToString() });
+            lstMappedPairs.Items.Add(newPair);
+        }
+
+        private void AddToMapList(ParameterMap aMap)
+        {
+            var newPair = new ListViewItem(new string[] { aMap.ParameterName, aMap.ParameterName, aMap.DataType, aMap.IsNullable.ToString(), aMap.IsNullable.ToString() });
+            lstMappedPairs.Items.Add(newPair);
         }
 
         private void AddToTargetObjectList(string label, string dataType)
@@ -374,8 +424,9 @@ namespace MockDataGenerator
             if(duplicate)
                 MessageBox.Show(String.Format("A field named {0} already exists in the mapping grid.", fieldName));
             else
-                lstMappedPairs.Items.Add(newPair);           
-             
+                lstMappedPairs.Items.Add(newPair);
+
+            lblTotalMapped.Text = lstMappedPairs.Items.Count.ToString();
         }
 
         private bool DisplayColumnsToMap(MultiFieldDataSourceRule mapRule, string fieldName)

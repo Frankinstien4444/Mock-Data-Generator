@@ -28,13 +28,25 @@ namespace MockDataGenerator.SpecialObjects
     public class SQLStore : BaseStore
     {
         [DataMember]
-        public String SQL { set; get; }        
+        public String SQL { set; get; }  
+        
+        public SQLStore(Guid mapId)
+            : base(mapId)
+        {
+
+        }
     }
 
     public class RuleStore : BaseStore
     {
         [DataMember]
         public List<IDataRule> Rules { set; get; }
+
+        public RuleStore(Guid mapId)
+        : base(mapId)
+        {
+
+        }
     }
 
     [Serializable]
@@ -50,9 +62,9 @@ namespace MockDataGenerator.SpecialObjects
         [DataMember]
         public int ParamterCount { set; get; }
 
-        public BaseStore()
+        public BaseStore(Guid mapId)
         {
-            MapID = Guid.NewGuid();
+            MapID = mapId;
         }
     }
 }
